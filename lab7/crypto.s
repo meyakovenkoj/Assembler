@@ -1,11 +1,11 @@
 .include "data.s"
-.section __DATA,__data
+.data
 .extern key
 .extern keylen
 .extern string
-.section __TEXT,__text
-.globl _crypto
-_crypto:
+.text
+.globl crypto
+crypto:
 lea string, %si
 lea string, %di
 xor %bx, %bx

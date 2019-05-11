@@ -1,12 +1,12 @@
 .include "crypto.s"
-.section __DATA,__data
+.data
 
 .extern menu
 .extern Error
 
-.section __TEXT,__text
-.globl _main
-.extern  _crypto
+.text
+.globl main
+.extern  crypto
 .extern  conin
 .extern  conout
 .extern  filein
@@ -14,7 +14,7 @@
 
 
 
-_main:
+main:
 men:
 sub     $8, %esp
 lea     menu, %eax
@@ -59,6 +59,5 @@ jmp ent
 
 
 exit:
-movl $0x2000001, %eax
-movl $0, %ebx
-syscall
+movl  $0, %eax
+ret
