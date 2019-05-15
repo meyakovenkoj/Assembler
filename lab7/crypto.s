@@ -6,23 +6,23 @@
 .text
 .globl crypto
 crypto:
-lea string, %si
-lea string, %di
-xor %bx, %bx
+lea string, %rsi
+lea string, %rdi
+xor %rbx, %rbx
 pr:
 cld
-xor %ax,%ax
+xor %rax,%rax
 lodsb
 c:
-	  cmp $32, %al
+	  cmp $' ', %al
 	  jne j1
 	  jmp pr
 j1:
-    cmp $44, %al
+    cmp $',', %al
 	  jne j2
 	  jmp pr
 j2:
-    cmp $59, %al
+    cmp $';', %al
   	jne j3
   	jmp pr
 j3:
@@ -38,17 +38,13 @@ j5:
   	jne j6
   	jmp endstr
 j6:
-    movb %al, %cl
-    push %si
-    lea key , %si
-    add %bx, %si
-    lodsb
-    xor %al, %cl
-    pop %si
-    inc %bx
-    cmp $keylen, %bx
+    movq $key, %rdx
+		lea (%rdx,%rbx,), %rcx
+    xor %cl, %al
+    inc %rbx
+    cmp $keylen, %rbx
     jne t
-    xor %bx, %bx
+    xor %rbx, %rbx
     t:
     stosb
 jmp pr

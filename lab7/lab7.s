@@ -1,11 +1,15 @@
 .include "crypto.s"
+.include "console.s"
 .data
 
 .extern menu
+.extern menulen
 .extern Error
+.extern erlen
+.extern clear
 
 .text
-.globl main
+.globl _start
 .extern  crypto
 .extern  conin
 .extern  conout
@@ -13,51 +17,67 @@
 .extern  fileout
 
 
-
-main:
+_start:
 men:
-sub     $8, %esp
-lea     menu, %eax
-mov     %eax, (%esp)
-call    _printf
-add     $8, %esp
+movq  $1,   %rax
+movq  $1,   %rdi
+movq  $menu, %rsi
+movq  menulen, %rdx
+syscall
 
 ent:
 xor %ax, %ax
-sub     $8, %esp
-call    _getchar
-add     $8, %esp
-cmp $48, %al
+movq  $0,   %rax
+movq  $1,   %rdi
+movq  $choice, %rsi
+movq  $1, %rdx
+syscall
+call clear
+cld
+movq $choice, %rsi
+lodsb
+
+cmpb $'0', %al
 je exit
-cmp $49, %al
+
+cmpb $'1', %al
 jne m1
-call _conin
+call conin
 jmp men
-m1: cmp $50, %al
+
+m1:
+cmpb $'2', %al
 jne m2
-call _filein
+//call filein
 jmp men
-m2: cmp $51, %al
+
+m2:
+cmpb $'3', %al
 jne m3
-call _conout
+call conout
 jmp men
-m3: cmp $52, %al
+
+m3:
+cmpb $'4', %al
 jne m4
-call _fileout
+//call fileout
 jmp men
-m4: cmp $53, %al
+
+m4:
+cmpb $'5', %al
 jne m5
-call _crypto
+call crypto
 jmp men
+
 m5:
-sub     $8, %esp
-lea     Error, %eax
-mov     %eax, (%esp)
-call    _printf
-add     $8, %esp
+movq  $1,   %rax
+movq  $1,   %rdi
+movq  $Error, %rsi
+movq  erlen, %rdx
+syscall
 jmp ent
 
 
 exit:
-movl  $0, %eax
-ret
+MOV		$60,	%rax
+SYSCALL

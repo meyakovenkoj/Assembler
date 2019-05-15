@@ -2,19 +2,31 @@
 .extern max
 .extern act
 .extern string
+.extern strlen
 .text
 .globl conin
 .globl conout
+.global clear
 conin:
-sub     $8, %esp
-call    gets
-add     $8, %esp
+movq  $0,   %rax
+movq  $1,   %rdi
+movq  $string, %rsi
+movq  strlen, %rdx
+syscall
 ret
 
 conout:
-sub     $8, %esp
-lea     string, %eax
-mov     %eax, (%esp)
-call    printf
-add     $8, %esp
+movq  $1,   %rax
+movq  $1,   %rdi
+movq  $string, %rsi
+movq  strlen, %rdx
+syscall
+ret
+
+clear:
+movq  $0,   %rax
+movq  $1,   %rdi
+movq  $trash, %rsi
+movq  $1, %rdx
+syscall
 ret
